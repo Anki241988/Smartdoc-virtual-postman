@@ -1,6 +1,17 @@
+
 import User from "../models/user.model.js"
 
 import argon2 from "argon2"
+
+import jwt from "jsonwebtoken"
+
+const JWT_SECRET=process.env.JWT_SECRET
+
+if (!JWT_SECRET || JWT_SECRET.length < 64) {
+    throw new Error("JWT_SECRET is missing or invalid")
+}
+
+
 
 async function registerUser(name,email,password){
 
@@ -29,4 +40,40 @@ async function registerUser(name,email,password){
  }
 }
 
+
+
+async function loginUser(email,password){
+  const normalizedEmail = email.trim().toLowerCase()
+
+  const user = await User.findOne({
+    email: normalizedEmail
+  }).select("+passwordHash")
+
+ if (!user || !user.passwordHash) {
+    const error = new Error("Invalid email or password")
+    error.code = "INVALID_CREDENTIALS"
+    throw error
+}
+
+const isPasswordValid=await argon2.verify(user.passwordHash,password)
+
+if (!isPasswordValid) {
+    const error = new Error("Invalid email or password")
+    error.code = "INVALID_CREDENTIALS"
+    throw error
+}
+const accessToken = jwt.sign(
+    {
+        sub: user.id
+    },
+    JWT_SECRET,
+    {
+        algorithm: "HS256",
+        expiresIn: "15m",
+        issuer: "smartdoc-api",
+        audience: "smartdoc-web"
+    }
+)
+}
 export {registerUser}
+export{loginUser}

@@ -16,8 +16,14 @@ if (err.type === "entity.parse.failed") {
         message: "Invalid JSON"
     })
 }
-   console.error("Unexpected server error",err.name)
-   
+  
+
+   if (err.code === "INVALID_CREDENTIALS") {
+    return res.status(401).json({
+        message: "Invalid email or password"
+    })
+}
+    console.error("Unexpected server error",err.name)
         return res.status(500).json({
             message:"Internal server error"
         })
