@@ -73,7 +73,18 @@ const accessToken = jwt.sign(
         issuer: "smartdoc-api",
         audience: "smartdoc-web"
     }
+    
 )
+return{
+    accessToken: accessToken,
+    user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        emailVerified: user.emailVerified
+    
+}
+}
 }
 export {registerUser}
 export{loginUser}
