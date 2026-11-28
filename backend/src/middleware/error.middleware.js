@@ -23,6 +23,11 @@ if (err.type === "entity.parse.failed") {
         message: "Invalid email or password"
     })
 }
+if (err.code === "USER_NOT_FOUND") {
+    return res.status(401).json({
+        message: "Authentication required"
+    })
+}
     console.error("Unexpected server error",err.name)
         return res.status(500).json({
             message:"Internal server error"

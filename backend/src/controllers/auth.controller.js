@@ -1,5 +1,6 @@
  import { registerUser } from "../services/auth.service.js"
  import { loginUser } from "../services/auth.service.js"
+ import { getCurrentUser } from "../services/auth.service.js"
  
  async function register(req,res){
 
@@ -42,5 +43,31 @@ res.status(200).json({
 
 }
 
+async function me(req, res) {
+
+    const userId = req.user.id
+
+    const user = await getCurrentUser(userId)
+
+    res.status(200).json({
+        user
+    })
+}
+
+function logout(req, res) {
+    res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/"
+    })
+
+    res.status(200).json({
+        message: "Logout successful"
+    })
+}
+
 export {register}
 export {login}
+export { me }
+export { logout }

@@ -86,5 +86,24 @@ return{
 }
 }
 }
+
+async function getCurrentUser(userId) {
+
+    const user = await User.findById(userId)
+
+    if (!user) {
+        const error = new Error("User not found")
+        error.code = "USER_NOT_FOUND"
+        throw error
+    }
+
+    return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        emailVerified: user.emailVerified
+    }
+}
 export {registerUser}
 export{loginUser}
+export { getCurrentUser }
