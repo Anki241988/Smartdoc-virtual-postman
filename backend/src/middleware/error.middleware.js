@@ -28,6 +28,11 @@ if (err.code === "USER_NOT_FOUND") {
         message: "Authentication required"
     })
 }
+if (err.code === "CATEGORY_NOT_FOUND") {
+    return res.status(404).json({
+        message: "Category not found"
+    })
+}
     console.error("Unexpected server error",err.name)
         return res.status(500).json({
             message:"Internal server error"
